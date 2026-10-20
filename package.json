@@ -1,0 +1,22 @@
+{
+  "name": "space-ship-game",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A 2D space ship game built with play2d-game-library.",
+  "author": "Vagner Santos",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "play2d-game-library": "file:../play2d-game-library"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3",
+    "vite": "^8.3.4"
+  }
+}
