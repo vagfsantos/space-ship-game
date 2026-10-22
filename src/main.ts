@@ -1,5 +1,6 @@
 import {
   canvas,
+  clearCanvas,
   gameLoop,
   gameObject,
   loadImage,
@@ -37,6 +38,6 @@ const ship = gameObject({
 });
 
 gameLoop(({ time }) => {
-  context.clearRect(0, 0, WIDTH, HEIGHT);
+  clearCanvas(context);
   renderGameObject(context, gameObject({ ...ship, position: shipPosition(time) }));
 });
