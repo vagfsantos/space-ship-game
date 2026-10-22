@@ -2,16 +2,63 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#05060f" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
     <title>Space Ship Game</title>
     <style>
-      html, body { margin: 0; height: 100%; background: #05060f; }
-      body { display: grid; place-items: center; }
-      canvas { background: #0b0d1f; image-rendering: pixelated; }
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #05060f;
+        overflow: hidden;
+        /* No scrolling, zooming or text selection while playing. */
+        touch-action: none;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
+      }
+      body {
+        display: grid;
+        place-items: center;
+        font-family: system-ui, sans-serif;
+      }
+      #game {
+        position: relative;
+        display: grid;
+        place-items: center;
+        width: 100vw;
+        height: 100dvh;
+      }
+      /* Scale the fixed-size canvas to fit the screen, keeping its aspect ratio. */
+      #game canvas {
+        width: min(100vw, calc(100dvh * 16 / 9));
+        height: auto;
+        background: #0b0d1f;
+      }
+      #hint {
+        position: absolute;
+        inset: auto 0 max(16px, env(safe-area-inset-bottom));
+        margin: 0;
+        color: #cfd8ea;
+        font-size: 14px;
+        text-align: center;
+        pointer-events: none;
+      }
+      #hint[hidden] {
+        display: none;
+      }
     </style>
   </head>
   <body>
-    <div id="game"></div>
+    <div id="game">
+      <p id="hint" hidden>Tap to steer by tilting your phone</p>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
