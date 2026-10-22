@@ -1,12 +1,16 @@
-import { createCanvas, size } from "play2d-game-library";
+import { canvas, size } from "play2d-game-library";
 
 const WIDTH = 640;
 const HEIGHT = 360;
 
-const { element, context } = createCanvas(size(WIDTH, HEIGHT));
+const { element, context } = canvas(size(WIDTH, HEIGHT));
 (document.getElementById("game") ?? document.body).append(element);
 
-const drawShip = (ctx: CanvasRenderingContext2D, x: number, y: number): void => {
+const drawShip = (
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+): void => {
   ctx.fillStyle = "#7fdbff";
   ctx.beginPath();
   ctx.moveTo(x, y - 16);
