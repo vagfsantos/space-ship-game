@@ -2,10 +2,10 @@ import {
   canvas,
   clamp,
   clearCanvas,
-  direction,
   fitCanvas,
   gameLoop,
   gameObject,
+  isPressed,
   keyboard,
   loadImage,
   move,
@@ -20,7 +20,6 @@ import {
   tilt,
   vector,
   wrap,
-  type DirectionKeys,
   type GameObject,
   type Vector,
 } from "play2d-game-library";
@@ -28,14 +27,10 @@ import nebulaImageUrl from "./assets/nebula.jpg";
 import shipImageUrl from "./assets/ship.svg";
 
 const SHIP_SIZE = size(32, 48);
-const SHIP_SPEED = 200; // pixels per second
-const BACKGROUND_SPEED = 40; // pixels per second, downwards: the ship seems to fly up
-const ARROWS: DirectionKeys = {
-  up: "ArrowUp",
-  down: "ArrowDown",
-  left: "ArrowLeft",
-  right: "ArrowRight",
-};
+const SHIP_SPEED = 300; // pixels per second
+const BACKGROUND_SPEED = 80; // pixels per second, downwards: the ship seems to fly up
+const LEFT_KEY = "ArrowLeft";
+const RIGHT_KEY = "ArrowRight";
 
 // Portrait game world, 640 tall. The width follows the screen's shape when the game
 // starts (from 9:21 tall phones to 9:16), so phones fill the whole screen and wider
@@ -51,7 +46,7 @@ fitCanvas(element);
 const container = document.getElementById("game") ?? document.body;
 container.prepend(element);
 
-// Input: arrow keys on desktop, tilting left/right on phones. Both always work.
+// Input: left/right arrow keys on desktop, tilting left/right on phones. Both always work.
 const keys = keyboard();
 const device = tilt({ maxAngle: 25 });
 
@@ -69,7 +64,8 @@ if (hint !== null && matchMedia("(pointer: coarse)").matches) {
     const enableTilt = (): void => {
       void requestTiltPermission().then((granted) => {
         if (!granted) {
-          hint.textContent = "Tilt permission denied or not supported. Tap to try again";
+          hint.textContent =
+            "Tilt permission denied or not supported. Tap to try again";
           return;
         }
         container.removeEventListener("pointerup", enableTilt);
@@ -82,9 +78,11 @@ if (hint !== null && matchMedia("(pointer: coarse)").matches) {
 }
 
 // Keyboard direction plus the phone's left/right tilt, limited to one full speed.
+// The ship only moves left and right: x from -1 to 1, y always 0.
 const steering = (): Vector => {
-  const fromKeys = direction(keys.pressed(), ARROWS);
-  return vector(clamp(fromKeys.x + device.current().x, -1, 1), fromKeys.y);
+  const pressed = keys.pressed();
+  const fromKeys = Number(isPressed(pressed, RIGHT_KEY)) - Number(isPressed(pressed, LEFT_KEY));
+  return vector(clamp(fromKeys + device.current().x, -1, 1), 0);
 };
 
 const wrapOnScreen = (object: GameObject): GameObject =>
@@ -92,13 +90,16 @@ const wrapOnScreen = (object: GameObject): GameObject =>
     object,
     position(
       wrap(object.position.x, -object.size.width, WIDTH),
-      wrap(object.position.y, -object.size.height, HEIGHT),
+      object.position.y,
     ),
   );
 
 // Game state: the ship as of the last frame. Each frame replaces it with a new, moved copy.
 let ship = gameObject({
-  position: position((WIDTH - SHIP_SIZE.width) / 2, HEIGHT - SHIP_SIZE.height - 48),
+  position: position(
+    (WIDTH - SHIP_SIZE.width) / 2,
+    HEIGHT - SHIP_SIZE.height - 48,
+  ),
   size: SHIP_SIZE,
   image: await loadImage(shipImageUrl),
 });
