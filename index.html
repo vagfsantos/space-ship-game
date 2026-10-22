@@ -35,10 +35,8 @@
         width: 100vw;
         height: 100dvh;
       }
-      /* Scale the fixed-size canvas to fit the screen, keeping its aspect ratio. */
+      /* Sized to the screen by fitCanvas() in main.ts. */
       #game canvas {
-        width: min(100vw, calc(100dvh * 16 / 9));
-        height: auto;
         background: #0b0d1f;
       }
       #hint {

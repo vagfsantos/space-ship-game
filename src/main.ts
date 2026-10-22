@@ -3,6 +3,7 @@ import {
   clamp,
   clearCanvas,
   direction,
+  fitCanvas,
   gameLoop,
   gameObject,
   keyboard,
@@ -12,6 +13,7 @@ import {
   position,
   renderGameObject,
   requestTiltPermission,
+  responsiveSize,
   scaleVector,
   size,
   tilt,
@@ -22,8 +24,6 @@ import {
 } from "play2d-game-library";
 import shipImageUrl from "./assets/ship.svg";
 
-const WIDTH = 640;
-const HEIGHT = 360;
 const SHIP_SIZE = size(32, 48);
 const SHIP_SPEED = 200; // pixels per second
 const ARROWS: DirectionKeys = {
@@ -33,7 +33,17 @@ const ARROWS: DirectionKeys = {
   right: "ArrowRight",
 };
 
-const { element, context } = canvas(size(WIDTH, HEIGHT));
+// Portrait game world, 640 tall. The width follows the screen's shape when the game
+// starts (from 9:21 tall phones to 9:16), so phones fill the whole screen and wider
+// screens get a 9:16 column.
+const { element, context } = canvas(
+  responsiveSize(
+    { height: 640, minAspect: 9 / 21, maxAspect: 9 / 16 },
+    size(window.innerWidth, window.innerHeight),
+  ),
+);
+const { width: WIDTH, height: HEIGHT } = element;
+fitCanvas(element);
 const container = document.getElementById("game") ?? document.body;
 container.prepend(element);
 
@@ -88,7 +98,7 @@ const wrapOnScreen = (object: GameObject): GameObject =>
 
 // Game state: the ship as of the last frame. Each frame replaces it with a new, moved copy.
 let ship = gameObject({
-  position: position((WIDTH - SHIP_SIZE.width) / 2, HEIGHT - 80),
+  position: position((WIDTH - SHIP_SIZE.width) / 2, HEIGHT - SHIP_SIZE.height - 48),
   size: SHIP_SIZE,
   image: await loadImage(shipImageUrl),
 });
