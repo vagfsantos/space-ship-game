@@ -12,20 +12,24 @@ import {
   moveTo,
   position,
   renderGameObject,
+  renderTiledImage,
   requestTiltPermission,
   responsiveSize,
   scaleVector,
   size,
   tilt,
   vector,
+  wrap,
   type DirectionKeys,
   type GameObject,
   type Vector,
 } from "play2d-game-library";
+import nebulaImageUrl from "./assets/nebula.jpg";
 import shipImageUrl from "./assets/ship.svg";
 
 const SHIP_SIZE = size(32, 48);
 const SHIP_SPEED = 200; // pixels per second
+const BACKGROUND_SPEED = 40; // pixels per second, downwards: the ship seems to fly up
 const ARROWS: DirectionKeys = {
   up: "ArrowUp",
   down: "ArrowDown",
@@ -83,10 +87,6 @@ const steering = (): Vector => {
   return vector(clamp(fromKeys.x + device.current().x, -1, 1), fromKeys.y);
 };
 
-// Wraps `value` into [min, max), so the ship re-enters from the opposite edge.
-const wrap = (value: number, min: number, max: number): number =>
-  ((((value - min) % (max - min)) + (max - min)) % (max - min)) + min;
-
 const wrapOnScreen = (object: GameObject): GameObject =>
   moveTo(
     object,
@@ -103,10 +103,19 @@ let ship = gameObject({
   image: await loadImage(shipImageUrl),
 });
 
-gameLoop(({ deltaTime }) => {
+// The nebula is seamless, so it repeats forever. Tiles are as wide as the screen.
+const nebula = await loadImage(nebulaImageUrl);
+const nebulaTileSize = size(WIDTH, WIDTH);
+
+gameLoop(({ time, deltaTime }) => {
   const velocity = scaleVector(steering(), SHIP_SPEED);
   ship = wrapOnScreen(move(ship, scaleVector(velocity, deltaTime / 1000)));
 
   clearCanvas(context);
+  renderTiledImage(context, {
+    image: nebula,
+    tileSize: nebulaTileSize,
+    offset: vector(0, (BACKGROUND_SPEED * time) / 1000),
+  });
   renderGameObject(context, ship);
 });
