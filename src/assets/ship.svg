@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="48" viewBox="0 0 32 48">
+  <!-- engine flame -->
+  <path d="M12 38 L16 48 L20 38 Z" fill="#ffb347"/>
+  <path d="M14 38 L16 44 L18 38 Z" fill="#fff3b0"/>
+  <!-- wings -->
+  <path d="M10 22 L0 36 L0 40 L10 34 Z" fill="#3a7bd5"/>
+  <path d="M22 22 L32 36 L32 40 L22 34 Z" fill="#3a7bd5"/>
+  <!-- hull -->
+  <path d="M16 0 C22 8 23 18 22 38 L10 38 C9 18 10 8 16 0 Z" fill="#dfe8f5"/>
+  <path d="M16 0 C19 8 20 18 19.5 38 L16 38 Z" fill="#b8c6db"/>
+  <!-- cockpit -->
+  <ellipse cx="16" cy="16" rx="3.2" ry="5.5" fill="#7fdbff" stroke="#1b4f72" stroke-width="1"/>
+</svg>
